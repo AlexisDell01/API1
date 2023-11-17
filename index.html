@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <title>Low level rest example</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    tr:hover {
+      background-color: #f5f5f5;
+    }
+  </style>
+  <script src="min.js"></script>
+</head>
+<body>
+
+  <h1>Tabla de Datos</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Cve_entidad</th>
+        <th>Desc_entidad</th>
+        <th>Cve_municipio</th>
+        <th>Desc_municipio</th>
+        <th>Id_indicador</th>
+        <th>Indicador</th>
+        <th>Año</th>
+        <th>Valor</th>
+        <th>Unidad_medida</th>
+      </tr>
+    </thead>
+    <tbody id="tabla-body">
+      <!-- Los resultados de la API se mostrarán aquí -->
+    </tbody>
+  </table>
+
+  <h2>Promedio</h2>
+  <div id="promedio"></div>
+
+  <h2>Datos Repetidos</h2>
+  <div id="repetidos"></div>
+
+  <h2>Mediana</h2>
+  <div id="mediana"></div>
+
+  <script>
+    // Realizar la solicitud GET a la API en PHP para obtener todos los datos
+    fetch('method.php')
+      .then(response => response.json())
+      .then(data => {
+        const tablaBody = document.getElementById('tabla-body');
+        data.forEach(item => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${item.cve_entidad}</td>
+            <td>${item.desc_entidad}</td>
+            <td>${item.cve_municipio}</td>
+            <td>${item.desc_municipio}</td>
+            <td>${item.id_indicador}</td>
+            <td>${item.indicador}</td>
+            <td>${item.año}</td>
+            <td>${item.valor}</td>
+            <td>${item.unidad_medida}</td>
+          `;
+          tablaBody.appendChild(row);
+        });
+      })
+      .catch(error => console.error('Error al obtener datos:', error));
+
+    // Realizar la solicitud GET a la API en PHP para obtener el promedio
+    fetch('method.php?action=promedio')
+      .then(response => response.json())
+      .then(data => {
+        const promedioDiv = document.getElementById('promedio');
+        promedioDiv.textContent = `Promedio: ${data.promedio}`;
+      })
+      .catch(error => console.error('Error al obtener el promedio:', error));
+
+    // Realizar la solicitud GET a la API en PHP para obtener datos repetidos
+    fetch('method.php?action=repetidos')
+      .then(response => response.json())
+      .then(data => {
+        const repetidosDiv = document.getElementById('repetidos');
+        repetidosDiv.textContent = `Datos Repetidos: ${JSON.stringify(data)}`;
+      })
+      .catch(error => console.error('Error al obtener datos repetidos:', error));
+
+    // Realizar la solicitud GET a la API en PHP para obtener la mediana
+    fetch('method.php?action=mediana')
+      .then(response => response.json())
+      .then(data => {
+        const medianaDiv = document.getElementById('mediana');
+        medianaDiv.textContent = `Mediana: ${data.mediana}`;
+      })
+      .catch(error => console.error('Error al obtener la mediana:', error));
+  </script>
+
+</body>
+</html>
